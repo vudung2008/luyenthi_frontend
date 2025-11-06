@@ -29,7 +29,8 @@ export const authService = {
     },
 
     signOut: async () => {
-        return api.post("/auth/signout", { withCredentials: true });
+        const refreshToken = localStorage.getItem('refreshToken')
+        return api.post("/auth/signout", { refreshToken });
     },
 
     getMe: async () => {
@@ -38,7 +39,12 @@ export const authService = {
     },
 
     refresh: async () => {
-        const res = await api.get("/auth/gettoken", { withCredentials: true });
-        return res.data.accessToken;
+        const refreshToken = localStorage.getItem("refreshToken");
+        if (!refreshToken) throw new Error("Không có refresh token");
+
+        const res = await api.post("/auth/gettoken", { refreshToken });
+        const { accessToken } = res.data;
+
+        return accessToken;
     },
 };

@@ -35,7 +35,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         try {
             set({ loading: true });
 
-            await authService.signIn(username, password);
+            const { refreshToken } = await authService.signIn(username, password);
+            localStorage.setItem('refreshToken', refreshToken);
             // gọi refresh() của store (tự set token + load user)
             await get().refresh();
             toast.success("Chào mừng bạn quay lại🎉");
@@ -51,6 +52,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         try {
             get().clearState();
             await authService.signOut();
+            localStorage.removeItem('refreshToken');
             toast.success("Logout thành công!");
         } catch (error) {
             console.error(error);
@@ -78,7 +80,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             set({ loading: true });
             const { user, getMe, setAccessToken } = get();
             const accessToken = await authService.refresh();
-
             setAccessToken(accessToken);
 
             if (!user) {
