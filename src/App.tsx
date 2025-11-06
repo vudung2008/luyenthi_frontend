@@ -1,8 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import SignInPage from "./pages/SignInPage";
 import { Toaster } from "sonner";
-import SignupPage from "./pages/SignUpPage";
+import SignUpPage from "./pages/SignUpPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import AuthChecker from "./components/auth/AuthChecker";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
@@ -12,14 +13,10 @@ function App() {
       <BrowserRouter>
         <Routes>
           {/* public routes */}
-          <Route
-            path="/signin"
-            element={<SignInPage />}
-          />
-          <Route
-            path="/signup"
-            element={<SignupPage />}
-          />
+          <Route element={<AuthChecker />}>
+            <Route path="/signin" element={<SignInPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+          </Route>
 
           {/* protectect routes */}
           <Route element={<ProtectedRoute />}>

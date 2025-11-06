@@ -22,8 +22,8 @@ export function SigninForm({
   ...props
 }: React.ComponentProps<"div">) {
 
-  const { signIn } = useAuthStore();
   const navigate = useNavigate();
+  const { signIn } = useAuthStore();
 
   const {
     register,
