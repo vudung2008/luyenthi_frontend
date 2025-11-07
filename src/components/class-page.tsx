@@ -1,5 +1,4 @@
 import { useTabStore } from '@/stores/useTabStore'
-import React from 'react'
 
 const ClassPage = () => {
 
