@@ -7,12 +7,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     accessToken: null,
     user: null,
     loading: false,
+    classes: [],
 
     setAccessToken: (accessToken) => {
         set({ accessToken });
     },
     clearState: () => {
-        set({ accessToken: null, user: null, loading: false });
+        set({ accessToken: null, user: null, loading: false, classes: [] });
     },
 
     signUp: async (username, password, email, firstName, lastName, gender, birth) => {
@@ -39,6 +40,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             localStorage.setItem('refreshToken', refreshToken);
             // gọi refresh() của store (tự set token + load user)
             await get().refresh();
+            await get().getClass();
             toast.success("Chào mừng bạn quay lại🎉");
         } catch (error) {
             console.error(error);
@@ -94,4 +96,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             set({ loading: false });
         }
     },
+
+    getClass: async () => {
+        try {
+            set({ loading: true });
+            const classesData = await authService.getClass();
+            set({ classes: classesData });
+
+        } catch (error) {
+            console.error(error);
+            toast.error('Lỗi khi lấy dữ liệu lớp học');
+        } finally {
+            set({ loading: false });
+        }
+    }
 }));

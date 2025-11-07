@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router";
+import { Spinner } from "../ui/spinner";
 
 const AuthChecker = () => {
     const { accessToken, user, loading, refresh, getMe } = useAuthStore();
@@ -37,6 +38,7 @@ const AuthChecker = () => {
     if (starting || loading) {
         return (
             <div className="flex h-screen items-center justify-center">
+                <Spinner />
                 Đang kiểm tra đăng nhập...
             </div>
         );

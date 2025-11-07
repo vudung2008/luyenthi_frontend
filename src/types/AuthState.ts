@@ -1,10 +1,13 @@
 import type { User } from "./User";
+import type { Class } from "./Class";
 
 export interface AuthState {
     accessToken: string | null;
     loading: boolean;
 
     user: User | null;
+
+    classes: Class[];
 
     setAccessToken: (accessToken: string) => void;
     clearState: () => void;
@@ -24,4 +27,5 @@ export interface AuthState {
     signOut: () => Promise<void>;
     getMe: () => Promise<void>;
     refresh: () => Promise<void>;
+    getClass: () => Promise<void>;
 }

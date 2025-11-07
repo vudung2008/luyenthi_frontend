@@ -54,4 +54,9 @@ export const authService = {
 
         }
     },
+
+    getClass: async () => {
+        const res = await api.get('/class/getmyclasses');
+        return res.data;
+    },
 };
