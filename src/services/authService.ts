@@ -40,11 +40,18 @@ export const authService = {
 
     refresh: async () => {
         const refreshToken = localStorage.getItem("refreshToken");
-        if (!refreshToken) throw new Error("Không có refresh token");
+        if (!refreshToken) { throw new Error("Không có refresh token") };
 
-        const res = await api.post("/auth/gettoken", { refreshToken });
-        const { accessToken } = res.data;
+        try {
 
-        return accessToken;
+            const res = await api.post("/auth/gettoken", { refreshToken });
+            const { accessToken } = res.data;
+
+            return accessToken;
+        } catch (error) {
+            console.error('Không thể lấy accessToken, error:', error);
+            localStorage.removeItem('refreshToken');
+
+        }
     },
 };

@@ -8,7 +8,7 @@ const ProtectedRoute = () => {
 
     const init = async () => {
         // có thể xảy ra khi refresh trang
-        if (!accessToken) {
+        if (!accessToken && localStorage.getItem('refreshToken')) {
             await refresh();
         }
 

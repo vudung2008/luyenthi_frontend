@@ -50,8 +50,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     signOut: async () => {
         try {
-            get().clearState();
+            const { clearState } = get();
             await authService.signOut();
+            await clearState();
             localStorage.removeItem('refreshToken');
             toast.success("Logout thành công!");
         } catch (error) {
@@ -82,7 +83,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             const accessToken = await authService.refresh();
             setAccessToken(accessToken);
 
-            if (!user) {
+            if (!user && get().accessToken) {
                 await getMe();
             }
         } catch (error) {

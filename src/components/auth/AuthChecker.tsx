@@ -10,6 +10,7 @@ const AuthChecker = () => {
         try {
             // Nếu chưa có token, thử refresh
             if (!accessToken) {
+                console.log('get')
                 await refresh();
             }
 
@@ -17,6 +18,7 @@ const AuthChecker = () => {
             if (accessToken && !user) {
                 await getMe();
             }
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
             console.log("Chưa đăng nhập");
         } finally {
@@ -25,6 +27,10 @@ const AuthChecker = () => {
     };
 
     useEffect(() => {
+        if (!localStorage.getItem("refreshToken")) {
+            setStarting(false);
+            return;
+        }
         init();
     }, []);
 
