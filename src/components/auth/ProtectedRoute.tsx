@@ -8,21 +8,28 @@ const ProtectedRoute = () => {
     const [starting, setStarting] = useState(true);
 
     const init = async () => {
-        // có thể xảy ra khi refresh trang
-        if (!accessToken && localStorage.getItem('refreshToken')) {
-            await refresh();
-            await getClass();
-        }
+        try {
 
-        if (accessToken && !user) {
-            await getMe();
-        }
+            // có thể xảy ra khi refresh trang
+            if (!accessToken && localStorage.getItem('refreshToken')) {
+                await refresh();
+                await getClass();
+            }
 
-        if (accessToken && !classes) {
-            await getClass();
-        }
+            if (accessToken && !user) {
+                await getMe();
+            }
 
-        setStarting(false);
+            if (accessToken && !classes) {
+                await getClass();
+            }
+
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setStarting(false);
+
+        }
     };
 
     useEffect(() => {

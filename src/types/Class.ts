@@ -1,3 +1,5 @@
+import type { Member } from "./Member";
+
 export interface Class {
     info: {
         userId: string;
@@ -10,4 +12,13 @@ export interface Class {
         maxMem: number | null;
         description: string | null;
     };
+}
+
+export interface ClassInfo {
+    name: string;
+    classId: string;
+    maxMem: number;
+    description: string;
+    createAt: string;
+    members: Member[];
 }

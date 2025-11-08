@@ -1,6 +1,6 @@
 import { useTabStore } from '@/stores/useTabStore';
 import DashboardPage from './dashboard-page';
-import ClassPage from './class-page';
+import ClassDashboard from './class-page';
 import CreatePage from './create-page';
 
 const AppContent = () => {
@@ -12,7 +12,7 @@ const AppContent = () => {
             case 'dashboard':
                 return <DashboardPage />;
             case 'class':
-                return <ClassPage />;
+                return <ClassDashboard />;
             case 'create':
                 return <CreatePage />
             default:

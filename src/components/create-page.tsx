@@ -43,7 +43,7 @@ export default function CreateClassForm() {
             setTimeout(() => {
 
                 window.location.replace("/"); // chuyển trang bình thường, không SPA
-            }, 1000);
+            }, 300);
         } catch (err) {
             console.error(err);
             toast.error("Có lỗi xảy ra khi tạo lớp");

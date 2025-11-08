@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { authService } from "@/services/authService";
 import { useAuthStore } from "@/stores/useAuthStore";
+import type { Member } from "@/types/Member";
 
 export default function JoinPage() {
 
@@ -16,12 +17,6 @@ export default function JoinPage() {
         createAt: string;
         status: string;
         id: string;
-    }
-
-    interface Member {
-        userId: string;
-        role: string;
-        joinedAt: string; // hoặc Date nếu bạn convert
     }
 
     const [searchParams] = useSearchParams();

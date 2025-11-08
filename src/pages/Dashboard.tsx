@@ -12,7 +12,7 @@ import { useTabStore } from "@/stores/useTabStore"
 
 const Dashboard = () => {
 
-    const { cls } = useTabStore();
+    const { tab } = useTabStore();
 
     return (
 
@@ -26,7 +26,7 @@ const Dashboard = () => {
                             orientation="vertical"
                             className="mr-2 data-[orientation=vertical]:h-4"
                         />
-                        {cls}
+                        {tab.toUpperCase()}
                     </div>
                 </header>
                 <AppContent />
