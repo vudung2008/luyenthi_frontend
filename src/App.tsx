@@ -5,6 +5,7 @@ import SignUpPage from "./pages/SignUpPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AuthChecker from "./components/auth/AuthChecker";
 import Dashboard from "./pages/Dashboard";
+import InvitePage from "./pages/InvitePage";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
               path="/"
               element={<Dashboard />}
             />
+            <Route path="/invite" element={<InvitePage />} />
           </Route>
         </Routes>
       </BrowserRouter>

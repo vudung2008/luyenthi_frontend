@@ -11,7 +11,6 @@ const AuthChecker = () => {
         try {
             // Nếu chưa có token, thử refresh
             if (!accessToken) {
-                console.log('get')
                 await refresh();
             }
 

@@ -109,5 +109,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         } finally {
             set({ loading: false });
         }
+    },
+    getClassInfo: async (id) => {
+        try {
+            set({ loading: true });
+            const res = await authService.getClassInfo(id);
+            console.log(res);
+        } catch (error) {
+            console.error(error);
+            toast.error('Lỗi khi lấy dữ liệu lớp học');
+        } finally {
+            set({ loading: false });
+        }
     }
 }));

@@ -44,6 +44,7 @@ export function SigninForm({
 
       await signIn(username, password);
       navigate("/");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       console.error('.');
     }
@@ -88,7 +89,12 @@ export function SigninForm({
                     Quên mật khẩu?
                   </a>
                 </div>
-                <Input id="password" type="password" required {...register("password")} />
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  placeholder="Nhập mật khẩu"
+                  {...register("password")} />
                 {errors.password && (
                   <p className="text-destructive text-sm">
                     {errors.password.message}

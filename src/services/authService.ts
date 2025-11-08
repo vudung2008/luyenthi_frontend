@@ -59,4 +59,18 @@ export const authService = {
         const res = await api.get('/class/getmyclasses');
         return res.data;
     },
+    getClassInfo: async (id: string) => {
+        try {
+            const res = await api.get(`/class/getclassinfo?id=${id}`);
+            return res.data;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    createClass: async (name: string, description: string, maxMem: number) => {
+        await api.post('/class/createclass', { name, description, maxMem: (maxMem == 0 ? null : maxMem) })
+    },
+    joinClass: async (classId: string) => {
+        await api.post('/class/joinclass', { classId });
+    }
 };

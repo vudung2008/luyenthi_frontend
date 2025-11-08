@@ -2,6 +2,7 @@ import { useTabStore } from '@/stores/useTabStore';
 import DashboardPage from './dashboard-page';
 import ClassPage from './class-page';
 import CreatePage from './create-page';
+import JoinClassPage from './join-class-page';
 
 const AppContent = () => {
 
@@ -15,6 +16,8 @@ const AppContent = () => {
                 return <ClassPage />;
             case 'create':
                 return <CreatePage />
+            case 'joinClass':
+                return <JoinClassPage />
             default:
                 return <DashboardPage />;
         }

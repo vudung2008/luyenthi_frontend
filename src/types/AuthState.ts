@@ -28,4 +28,5 @@ export interface AuthState {
     getMe: () => Promise<void>;
     refresh: () => Promise<void>;
     getClass: () => Promise<void>;
+    getClassInfo: (id: string) => Promise<void>;
 }
