@@ -6,7 +6,7 @@ import { useTabStore } from "@/stores/useTabStore";
 import { authService } from "@/services/authService";
 import type { ClassInfo } from "@/types/Class";
 
-const tools = ["Bài tập", "Điểm danh", "Thống kê", "Tài nguyên"];
+const tools = ["Bài tập", "Điểm danh", "Thống kê", "Tài nguyên", "Tạo đề"];
 
 export default function ClassDashboard() {
     const [activeTab, setActiveTab] = useState(tools[0]);
