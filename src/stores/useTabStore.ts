@@ -6,6 +6,7 @@ interface TabState {
     tab: string;
     setClass: (cls: string) => void;
     setTab: (tab: string) => void;
+    clearState: () => void;
 }
 
 export const useTabStore = create<TabState>((set) => ({
@@ -13,4 +14,5 @@ export const useTabStore = create<TabState>((set) => ({
     tab: 'dashboard',
     setTab: (tab) => set({ tab }),
     setClass: (cls) => set({ cls: cls }),
+    clearState: () => set({ tab: 'dashboard' })
 }));

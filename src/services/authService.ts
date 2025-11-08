@@ -1,4 +1,5 @@
 import api from "@/lib/axios";
+import type { Member } from "@/types/Member";
 
 export const authService = {
     signUp: async (
@@ -72,5 +73,14 @@ export const authService = {
     },
     joinClass: async (classId: string) => {
         await api.post('/class/joinclass', { classId });
+    },
+    getUserInfo: async (member: Member) => {
+        try {
+            const { userId, role, joinedAt } = member;
+            const res = await api.get(`/me/getUserInfo?id=${userId}&role=${role}&joinedAt=${joinedAt}`);
+            return res.data;
+        } catch (error) {
+            console.error(error);
+        }
     }
 };

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { toast } from "sonner";
 import { authService } from "@/services/authService";
 import type { AuthState } from "@/types/AuthState";
+import { useTabStore } from "@/stores/useTabStore";
 
 export const useAuthStore = create<AuthState>((set, get) => ({
     accessToken: null,
@@ -56,6 +57,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             await authService.signOut();
             await clearState();
             localStorage.removeItem('refreshToken');
+            await useTabStore.getState().clearState();
             toast.success("Logout thành công!");
         } catch (error) {
             console.error(error);

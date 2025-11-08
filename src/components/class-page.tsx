@@ -5,13 +5,16 @@ import { Label } from "@/components/ui/label";
 import { useTabStore } from "@/stores/useTabStore";
 import { authService } from "@/services/authService";
 import type { ClassInfo } from "@/types/Class";
+import { Button } from "./ui/button";
+import { useAuthStore } from "@/stores/useAuthStore";
+import type { User } from "@/types/User";
 
 const tools = ["Bài tập", "Thành viên", "Thống kê", "Tài nguyên", "Tạo đề"];
 
 export default function ClassDashboard() {
     const [activeTab, setActiveTab] = useState(tools[0]);
     const { cls } = useTabStore();
-
+    const { user } = useAuthStore();
     const [classData, setClassData] = useState<ClassInfo | null>(null);
 
     const getClassInfo = async (classId: string) => {
@@ -25,6 +28,7 @@ export default function ClassDashboard() {
 
     useEffect(() => {
         if (!cls) return;
+        setActiveTab(tools[0]);
         getClassInfo(cls);
     }, [cls]);
 
@@ -68,11 +72,14 @@ export default function ClassDashboard() {
                     </div>
 
                     {/* TabsContent */}
-                    {tools.map((tool) => (
-                        <TabsContent key={tool} value={tool} className="p-4 border rounded-md bg-white">
-                            <TabPanel tool={tool} activeTab={activeTab} />
-                        </TabsContent>
-                    ))}
+                    <div className="flex-1 overflow-y-auto max-h-[70vh]">
+
+                        {tools.map((tool) => (
+                            <TabsContent key={tool} value={tool} className="p-4 border rounded-md bg-white">
+                                <TabPanel tool={tool} activeTab={activeTab} classData={classData} user={user} />
+                            </TabsContent>
+                        ))}
+                    </div>
                 </Tabs>
             </div>
 
@@ -81,10 +88,12 @@ export default function ClassDashboard() {
     );
 }
 
-function TabPanel({ tool, activeTab }: { tool: string; activeTab: string }) {
+function TabPanel({ tool, activeTab, classData, user }: { user: User | null; tool: string; activeTab: string; classData: ClassInfo | null }) {
     const [data, setData] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
+        setLoading(true);
         if (activeTab === tool && !data) {
             // Giả lập gọi API
             console.log(`Fetching API for ${tool}`);
@@ -92,14 +101,121 @@ function TabPanel({ tool, activeTab }: { tool: string; activeTab: string }) {
                 setData(`Dữ liệu của ${tool}`);
             }, 500);
         }
+        setLoading(false);
     }, [activeTab, tool, data]);
 
-    if (!data) return <p>Loading {tool}...</p>;
+    if (loading) return <p>Loading {tool}...</p>;
 
+    switch (tool) {
+        // Tab bài tập
+        case 'Bài tập':
+            return (
+                <div>
+                    <h2 className="text-lg font-bold">Bài Tập</h2>
+                    <p>{data}</p>
+                </div>
+            )
+
+
+        // Tab tài nguyên
+        case "Tài nguyên":
+            return (
+                <div>
+                    <h2 className="text-lg font-bold">Tài Nguyên</h2>
+                    <p>{data}</p>
+                </div>
+            )
+
+
+        // Tab thành viên
+        case "Thành viên":
+
+            return (
+                <MemberTab classData={classData} />
+            );
+
+
+
+        // Tab thông kê
+        case "Thống kê":
+            return (
+                <div>
+                    <h2 className="text-lg font-bold">Thống Kê</h2>
+                    <p>{data}</p>
+                </div>
+            )
+
+
+        // Tab tạo đề
+        case "Tạo đề":
+            return (
+                <CreateExam classData={classData} user={user} />
+            )
+        default:
+            break;
+    }
+}
+
+const MemberTab = ({ classData }: { classData: ClassInfo | null }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [users, setUsers] = useState<any[]>([]);
+    useEffect(() => {
+        if (!classData) return;
+        (async () => {
+            const data = await Promise.all(
+                classData.members.map((member) => authService.getUserInfo(member))
+            );
+            setUsers(data);
+            console.log(data);
+        })();
+    }, [classData]);
+    return (
+        <div className="space-y-4">
+            <div className="flex border rounded-lg p-4">
+
+                <div className="w-1/2 border-r pr-4">
+                    <h2 className="text-lg font-bold">Thành viên ({users?.length || 0})</h2>
+                </div>
+                <div className="w-1/2 pl-4 justify-end">
+                    <Button onClick={async () => {
+                        try {
+                            await navigator.clipboard.writeText(`${window.location.origin}/invite?id=${classData?.classId}`);
+                        } catch (error) {
+                            console.log(error)
+                        }
+                    }}>Lấy link invite</Button>
+                </div>
+            </div>
+            {/* Kiểm tra nếu có dữ liệu */}
+            {users?.length ? (
+                <ul className="divide-y divide-gray-200 border rounded-md">
+                    {users.map((user) => (
+                        <li key={user._id} className="p-3 flex justify-between items-center">
+                            <div>
+                                <p className="font-medium">{user.lastName + ' ' + user.firstName}</p>
+                                <p className="text-sm text-gray-500">
+                                    Vai trò: {user.role}
+                                </p>
+                            </div>
+                            <span className="text-xs text-gray-400">
+                                {new Date(user.joinedAt).toLocaleDateString("vi-VN")}
+                            </span>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p className="text-sm text-gray-500">Chưa có thành viên nào.</p>
+            )}
+        </div>
+    )
+}
+
+const CreateExam = ({ classData, user }: { user: User | null; classData: ClassInfo | null }) => {
+    const isLeader = classData?.members.some((member) => member.userId === user?._id && member.role === "leader");
+    console.log(isLeader);
     return (
         <div>
-            <h2 className="text-lg font-bold">{tool}</h2>
-            <p>{data}</p>
-        </div>
-    );
+            {isLeader}
+        </div >
+    )
 }
