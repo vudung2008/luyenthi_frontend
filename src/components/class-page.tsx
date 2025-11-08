@@ -6,7 +6,7 @@ import { useTabStore } from "@/stores/useTabStore";
 import { authService } from "@/services/authService";
 import type { ClassInfo } from "@/types/Class";
 
-const tools = ["Bài tập", "Điểm danh", "Thống kê", "Tài nguyên", "Tạo đề"];
+const tools = ["Bài tập", "Thành viên", "Thống kê", "Tài nguyên", "Tạo đề"];
 
 export default function ClassDashboard() {
     const [activeTab, setActiveTab] = useState(tools[0]);
@@ -51,9 +51,10 @@ export default function ClassDashboard() {
             {/* Phần 2: Công cụ */}
             <div className="flex flex-col gap-4 w-full">
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col w-full">
+
                     {/* TabsList cuộn ngang */}
-                    <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-slate-400 scrollbar-none scroll-smooth touch-pan-x">
-                        <TabsList className="flex gap-2 whitespace-nowrap py-2 min-w-max">
+                    <div className="overflow-x-auto scroll-smooth touch-pan-x">
+                        <TabsList className="inline-flex gap-2 whitespace-nowrap py-2 min-w-max">
                             {tools.map((tool) => (
                                 <TabsTrigger
                                     key={tool}
@@ -66,20 +67,39 @@ export default function ClassDashboard() {
                         </TabsList>
                     </div>
 
-
                     {/* TabsContent */}
                     {tools.map((tool) => (
                         <TabsContent key={tool} value={tool} className="p-4 border rounded-md bg-white">
-                            <p className="text-lg font-medium">{tool}</p>
-                            <p className="text-sm text-slate-500 mt-2">
-                                Nội dung {tool} sẽ hiển thị ở đây.
-                            </p>
+                            <TabPanel tool={tool} activeTab={activeTab} />
                         </TabsContent>
                     ))}
                 </Tabs>
             </div>
 
+
         </div>
     );
 }
 
+function TabPanel({ tool, activeTab }: { tool: string; activeTab: string }) {
+    const [data, setData] = useState<string>('');
+
+    useEffect(() => {
+        if (activeTab === tool && !data) {
+            // Giả lập gọi API
+            console.log(`Fetching API for ${tool}`);
+            setTimeout(() => {
+                setData(`Dữ liệu của ${tool}`);
+            }, 500);
+        }
+    }, [activeTab, tool, data]);
+
+    if (!data) return <p>Loading {tool}...</p>;
+
+    return (
+        <div>
+            <h2 className="text-lg font-bold">{tool}</h2>
+            <p>{data}</p>
+        </div>
+    );
+}
