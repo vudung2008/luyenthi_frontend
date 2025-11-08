@@ -49,26 +49,36 @@ export default function ClassDashboard() {
             </Card>
 
             {/* Phần 2: Công cụ */}
-            <div className="flex flex-col gap-4">
-                <Tabs value={activeTab} onValueChange={setActiveTab}>
-                    <TabsList>
-                        {tools.map((tool) => (
-                            <TabsTrigger key={tool} value={tool}>
-                                {tool}
-                            </TabsTrigger>
-                        ))}
-                    </TabsList>
+            <div className="flex flex-col gap-4 w-full">
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col w-full">
+                    {/* TabsList cuộn ngang */}
+                    <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-slate-400">
+                        <TabsList className="flex gap-2 whitespace-nowrap py-2 min-w-max">
+                            {tools.map((tool) => (
+                                <TabsTrigger
+                                    key={tool}
+                                    value={tool}
+                                    className="flex-shrink-0 min-w-[80px] text-center px-3 py-1"
+                                >
+                                    {tool}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </div>
 
+
+                    {/* TabsContent */}
                     {tools.map((tool) => (
-                        <TabsContent key={tool} value={tool}>
-                            <div className="p-4 border rounded-md bg-white text-center">
-                                <p className="text-lg font-medium">{tool}</p>
-                                <p className="text-sm text-slate-500 mt-2">Nội dung {tool} sẽ hiển thị ở đây.</p>
-                            </div>
+                        <TabsContent key={tool} value={tool} className="p-4 border rounded-md bg-white">
+                            <p className="text-lg font-medium">{tool}</p>
+                            <p className="text-sm text-slate-500 mt-2">
+                                Nội dung {tool} sẽ hiển thị ở đây.
+                            </p>
                         </TabsContent>
                     ))}
                 </Tabs>
             </div>
+
         </div>
     );
 }
