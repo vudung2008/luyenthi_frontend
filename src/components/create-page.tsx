@@ -63,19 +63,19 @@ export default function CreateClassForm() {
                     <CardContent className="space-y-4">
                         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
                             <div>
-                                <Label htmlFor="name">Tên lớp</Label>
+                                <Label className='block text-sm' htmlFor="name">Tên lớp</Label>
                                 <Input id="name" placeholder="Nhập tên lớp học" {...register("name")} />
                                 {errors.name && <p className="text-destructive text-sm">{errors.name.message}</p>}
                             </div>
 
                             <div>
-                                <Label htmlFor="description">Mô tả</Label>
+                                <Label className='block text-sm' htmlFor="description">Mô tả</Label>
                                 <Textarea id="description" placeholder="Nhập mô tả lớp học" {...register("description")} />
                                 {errors.description && <p className="text-destructive text-sm">{errors.description.message}</p>}
                             </div>
 
                             <div>
-                                <Label htmlFor="maxMem">Số lượng tối đa</Label>
+                                <Label className='block text-sm' htmlFor="maxMem">Số lượng tối đa</Label>
                                 <Input id="maxMem" type="number" min={1} {...register("maxMem", { valueAsNumber: true })} />
                                 {errors.maxMem && <p className="text-destructive text-sm">{errors.maxMem.message}</p>}
                             </div>

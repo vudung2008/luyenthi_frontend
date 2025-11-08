@@ -52,7 +52,7 @@ export default function ClassDashboard() {
             <div className="flex flex-col gap-4 w-full">
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-col w-full">
                     {/* TabsList cuộn ngang */}
-                    <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-slate-400">
+                    <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-slate-400 scrollbar-none scroll-smooth touch-pan-x">
                         <TabsList className="flex gap-2 whitespace-nowrap py-2 min-w-max">
                             {tools.map((tool) => (
                                 <TabsTrigger
