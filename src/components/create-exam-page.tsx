@@ -1,9 +1,8 @@
 import { Label } from "@radix-ui/react-label"
 import { Button } from "./ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card"
+import { Card, CardContent, CardFooter, CardHeader } from "./ui/card"
 import { Input } from "./ui/input"
 import { Textarea } from "./ui/textarea"
-import { useState } from "react"
 
 const CreateExamPage = () => {
 
