@@ -8,6 +8,7 @@ import type { ClassInfo } from "@/types/Class";
 import { Button } from "./ui/button";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { User } from "@/types/User";
+import { toast } from "sonner";
 
 const tools = ["Bài tập", "Thành viên", "Thống kê", "Tài nguyên", "Tạo đề"];
 
@@ -180,6 +181,7 @@ const MemberTab = ({ classData }: { classData: ClassInfo | null }) => {
                     <Button onClick={async () => {
                         try {
                             await navigator.clipboard.writeText(`${window.location.origin}/invite?id=${classData?.classId}`);
+                            toast.success('Sao chép vào bộ nhớ thành công');
                         } catch (error) {
                             console.log(error)
                         }

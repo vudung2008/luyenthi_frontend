@@ -2,6 +2,7 @@ import { useTabStore } from '@/stores/useTabStore';
 import DashboardPage from './dashboard-page';
 import ClassDashboard from './class-page';
 import CreatePage from './create-page';
+import CreateExamPage from './create-exam-page';
 
 const AppContent = () => {
 
@@ -15,6 +16,8 @@ const AppContent = () => {
                 return <ClassDashboard />;
             case 'create':
                 return <CreatePage />
+            case 'create_exam':
+                return <CreateExamPage />
             default:
                 return <DashboardPage />;
         }

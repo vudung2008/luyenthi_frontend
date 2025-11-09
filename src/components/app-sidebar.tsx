@@ -43,6 +43,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         logo: GalleryVerticalEnd,
         desc: "World",
       },
+      {
+        name: "Create Exam",
+        tab: 'create_exam',
+        logo: GalleryVerticalEnd,
+        desc: "World",
+      },
     ],
     projects: (classes ?? []).map((cls) => ({
       name: cls.class.name,
