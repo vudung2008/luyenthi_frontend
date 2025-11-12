@@ -77,7 +77,7 @@ export default function ClassDashboard() {
 
                         {tools.map((tool) => (
                             <TabsContent key={tool} value={tool} className="p-4 border rounded-md bg-white">
-                                <TabPanel tool={tool} activeTab={activeTab} classData={classData} user={user} />
+                                <TabPanel cls={cls} tool={tool} activeTab={activeTab} classData={classData} user={user} />
                             </TabsContent>
                         ))}
                     </div>
@@ -89,7 +89,7 @@ export default function ClassDashboard() {
     );
 }
 
-function TabPanel({ tool, activeTab, classData, user }: { user: User | null; tool: string; activeTab: string; classData: ClassInfo | null }) {
+function TabPanel({ tool, activeTab, classData, user, cls }: { cls: string, user: User | null; tool: string; activeTab: string; classData: ClassInfo | null }) {
     const [data, setData] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -111,10 +111,7 @@ function TabPanel({ tool, activeTab, classData, user }: { user: User | null; too
         // Tab bài tập
         case 'Bài tập':
             return (
-                <div>
-                    <h2 className="text-lg font-bold">Bài Tập</h2>
-                    <p>{data}</p>
-                </div>
+                <ExamTab cls={cls} />
             )
 
 
@@ -155,6 +152,12 @@ function TabPanel({ tool, activeTab, classData, user }: { user: User | null; too
         default:
             break;
     }
+}
+
+const ExamTab = ({ cls }: { cls: string }) => {
+    return (
+        <>{cls}</>
+    )
 }
 
 const MemberTab = ({ classData }: { classData: ClassInfo | null }) => {

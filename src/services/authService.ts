@@ -1,5 +1,47 @@
 import api from "@/lib/axios";
 import type { Member } from "@/types/Member";
+import { toast } from "sonner";
+
+interface MultiChoice {
+    content: string;
+    options: string[];
+    correctAnswer: number;
+}
+
+interface TrueFalseItem {
+    statement: string;
+    correctAnswer: boolean;
+}
+
+interface TrueFalse {
+    content: string;
+    items: TrueFalseItem[];
+}
+
+interface ShortAnswer {
+    content: string;
+    correctAnswer: string;
+}
+
+interface Question {
+    type: "multichoices" | "true-false" | "short-answer";
+    multichoices?: MultiChoice;
+    truefalse?: TrueFalse;
+    shortanswer?: ShortAnswer;
+}
+
+interface Exam {
+    title: string;
+    uploadBy: string;
+    time: number;
+    classId: string | null;
+    score: {
+        multichoices: number;
+        truefalse: number;
+        shortanswer: number;
+    };
+    questions: Question[];
+}
 
 export const authService = {
     signUp: async (
@@ -81,6 +123,25 @@ export const authService = {
             return res.data;
         } catch (error) {
             console.error(error);
+        }
+    },
+    createExam: async (data: Exam) => {
+        try {
+            const res = await api.post('/exam/createexam', data);
+            console.log(res)
+            toast.success(res.data.message);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            toast.error('Không thể tạo bài thi, vui lòng kiểm tra lại');
+        }
+    },
+    getExams: async (classId: string) => {
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const res = await api.get(`/exam/getexam?id=${classId}`)
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            console.log();
         }
     }
 };
