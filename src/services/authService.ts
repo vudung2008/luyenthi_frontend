@@ -135,13 +135,4 @@ export const authService = {
             toast.error('Không thể tạo bài thi, vui lòng kiểm tra lại');
         }
     },
-    getExams: async (classId: string) => {
-        try {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const res = await api.get(`/exam/getexam?id=${classId}`)
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error) {
-            console.log();
-        }
-    }
 };
