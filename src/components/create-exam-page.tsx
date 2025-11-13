@@ -73,62 +73,80 @@ export interface Class {
 
 // ====== Parser Functions ======
 const tnParser = (data: string): MultiChoice[] => {
-    const regex = /Câu \d+:[\s\S]*?(?=Câu \d+:|$)/g;
-    const questions = data.match(regex)?.map((q) => q.trim()) || [];
-    const cleaned = questions.map((q) => q.replace(/^Câu \d+:\s*/, ""));
-    const mainData: MultiChoice[] = [];
+    const regex = /Câu\s+\d+:[\s\S]*?(?=Câu\s+\d+:|$)/g;
+    const blocks = data.match(regex) || [];
 
-    cleaned.forEach((v) => {
-        const question = v.replace(/\s*A\.[\s\S]*$/, "").trim();
-        const optionsPartMatch = v.match(/\s*A\.[\s\S]*$/);
-        const optionsPart = optionsPartMatch?.[0].trim() || "";
+    return blocks.map((block) => {
+        const body = block.replace(/^Câu\s+\d+:\s*/, "");
+        // chỉ khớp A. hoặc a) mà trước đó là đầu chuỗi hoặc xuống dòng hoặc khoảng trắng
+        const splitIndex = body.search(/(?:^|\s|\r?\n)(?=(?:A\.|a\)|B\.|b\)|C\.|c\)|D\.|d\)))/);
 
-        let options: string[] = [];
-        if (optionsPart) {
-            options = optionsPart
-                .split(/\s*(?=[A-D]\.)/)
-                .map((o) => o.trim())
-                .filter((o) => o)
-                .map((opt) => opt.replace(/^[A-D]\.\s*/, ""));
-        }
+        const question =
+            splitIndex !== -1
+                ? body.slice(0, splitIndex).trimEnd()
+                : body.trimEnd();
 
-        mainData.push({
+        const optionsPart =
+            splitIndex !== -1 ? body.slice(splitIndex) : "";
+
+        const options = optionsPart
+            .split(/(?:^|\s|\r?\n)(?=(?:A\.|a\)|B\.|b\)|C\.|c\)|D\.|d\)))/)
+            .map((opt) =>
+                opt.trim().replace(/^(?:A\.|a\)|B\.|b\)|C\.|c\)|D\.|d\))\s*/, "")
+            )
+            .filter((o) => o.length > 0);
+
+        return {
             content: question,
             options,
             correctAnswer: -1,
-        });
+        };
     });
-
-    return mainData;
 };
+
 
 const dsParser = (data: string): TrueFalse[] => {
-    const regex = /Câu \d+:[\s\S]*?(?=Câu \d+:|$)/g;
-    const questions = data.match(regex)?.map((q) => q.trim()) || [];
-    const cleaned = questions.map((q) => q.replace(/^Câu \d+:\s*/, ""));
+    const regex = /Câu\s+\d+:[\s\S]*?(?=Câu\s+\d+:|$)/g;
+    const blocks = data.match(regex) || [];
 
-    return cleaned.map((q) => {
-        const itemsMatch = q.match(/[a-d]\)[^\n]+/gi) || [];
-        const questionText = q.split(/[a-d]\)/i)[0].trim();
+    return blocks.map((block) => {
+        const body = block.replace(/^Câu\s+\d+:\s*/, "");
+        // chỉ khớp a), b), c), d) khi trước đó không có ký tự liền kề
+        const splitIndex = body.search(/(?:^|\s|\r?\n)(?=(?:a\)|b\)|c\)|d\)))/);
 
-        const items = itemsMatch.map((opt) => ({
-            statement: opt.replace(/^[a-d]\)\s*/, "").trim(),
-            correctAnswer: false,
-        }));
+        const question =
+            splitIndex !== -1
+                ? body.slice(0, splitIndex).trimEnd()
+                : body.trimEnd();
 
-        return { content: questionText, items };
+        const itemsPart = splitIndex !== -1 ? body.slice(splitIndex) : "";
+
+        const items = itemsPart
+            .split(/(?:^|\s|\r?\n)(?=(?:a\)|b\)|c\)|d\)))/)
+            .map((opt) =>
+                opt.trim().replace(/^(?:a\)|b\)|c\)|d\))\s*/, "")
+            )
+            .filter((o) => o.length > 0)
+            .map((statement) => ({
+                statement,
+                correctAnswer: false,
+            }));
+
+        return { content: question, items };
     });
 };
 
-const tlnParser = (data: string): ShortAnswer[] => {
-    const regex = /Câu \d+:[\s\S]*?(?=Câu \d+:|$)/g;
-    const matches = data.match(regex)?.map((q) => q.trim()) || [];
 
-    return matches.map((q) => ({
-        content: q.replace(/^Câu \d+:\s*/, "").trim(),
+const tlnParser = (data: string): ShortAnswer[] => {
+    const regex = /Câu\s+\d+:[\s\S]*?(?=Câu\s+\d+:|$)/g;
+    const blocks = data.match(regex) || [];
+
+    return blocks.map((block) => ({
+        content: block.replace(/^Câu\s+\d+:\s*/, "").trimEnd(),
         correctAnswer: "",
     }));
 };
+
 
 // ====== Components cho từng loại câu ======
 interface MultiChoiceItemProps {
@@ -239,7 +257,7 @@ export default function CreateExamPage() {
             ...ds.map((q) => ({ type: "true-false" as const, truefalse: q })),
             ...tln.map((q) => ({ type: "short-answer" as const, shortanswer: q })),
         ];
-
+        console.log(allQuestions);
         setQuestions(allQuestions);
     };
 

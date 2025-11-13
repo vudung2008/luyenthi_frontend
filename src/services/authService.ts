@@ -135,4 +135,22 @@ export const authService = {
             toast.error('Không thể tạo bài thi, vui lòng kiểm tra lại');
         }
     },
+    getExams: async (classId: string) => {
+        try {
+            const res = await api.get(`/class/getexams?id=${classId}`);
+            return res.data;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            toast.error('Không thể lấy danh sách bài thi, vui lòng kiểm tra lại');
+        }
+    },
+    getExamInfo: async (examId: string) => {
+        try {
+            const res = await api.get(`/exam/info?id=${examId}`);
+            return res.data;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            toast.error('Không thể lấy dữ liệu bài thi, vui lòng kiểm tra lại');
+        }
+    }
 };

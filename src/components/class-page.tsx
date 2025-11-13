@@ -12,6 +12,49 @@ import { toast } from "sonner";
 
 const tools = ["Bài tập", "Thành viên", "Thống kê", "Tài nguyên", "Tạo đề"];
 
+interface MultiChoice {
+    content: string;
+    options: string[];
+    correctAnswer: number;
+}
+
+interface TrueFalseItem {
+    statement: string;
+    correctAnswer: boolean;
+}
+
+interface TrueFalse {
+    content: string;
+    items: TrueFalseItem[];
+}
+
+interface ShortAnswer {
+    content: string;
+    correctAnswer: string;
+}
+
+interface Question {
+    type: "multichoices" | "true-false" | "short-answer";
+    multichoices?: MultiChoice;
+    truefalse?: TrueFalse;
+    shortanswer?: ShortAnswer;
+}
+
+interface Exam {
+    _id: string;
+    title: string;
+    uploadBy: string;
+    time: number;
+    classId: string | null;
+    score: {
+        multichoices: number;
+        truefalse: number;
+        shortanswer: number;
+    };
+    questions: Question[];
+    createdAt: string;
+}
+
 export default function ClassDashboard() {
     const [activeTab, setActiveTab] = useState(tools[0]);
     const { cls } = useTabStore();
@@ -155,10 +198,72 @@ function TabPanel({ tool, activeTab, classData, user, cls }: { cls: string, user
 }
 
 const ExamTab = ({ cls }: { cls: string }) => {
+    const [data, setData] = useState<Exam[] | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const res = await authService.getExams(cls); // giữ nguyên service của bạn
+                console.log(res);
+                setData(res);
+            } catch (err) {
+                console.error("Lỗi khi tải dữ liệu:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [cls]);
+
+    const handleExamClick = (exam: Exam) => {
+
+        // ví dụ: chuyển trang, mở modal, hoặc console.log
+        console.log("Exam clicked:", exam._id);
+        window.location.replace('/exam/' + exam._id);
+    };
+
+    if (loading) return <div>Đang tải...</div>;
+    if (!data || data.length === 0) return <div>Không có dữ liệu</div>;
+
     return (
-        <>{cls}</>
-    )
-}
+        <div className="grid gap-3">
+            {data.map((exam) => (
+                <div
+                    key={exam._id}
+                    // wrapper clickable, dùng div với role/button để dễ custom style
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleExamClick(exam)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            handleExamClick(exam);
+                        }
+                    }}
+                    className="cursor-pointer transform transition duration-150 ease-out
+                     hover:-translate-y-1 hover:shadow-lg active:scale-95
+                     focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400
+                     rounded-xl"
+                >
+                    <Card className="p-4">
+                        <Label className="pl-1 block text-md font-medium">{exam.title}</Label>
+                        <p className="pl-1 block text-sm text-muted-foreground">Số câu: {exam.questions?.length ?? 0}</p>
+                        <p className="pl-1 block text-sm text-muted-foreground">
+                            Ngày tạo:{" "}
+                            {exam.createdAt
+                                ? new Date(exam.createdAt).toLocaleDateString("vi-VN")
+                                : "Không xác định"}
+                        </p>
+                    </Card>
+                </div>
+            ))}
+        </div>
+    );
+};
+
 
 const MemberTab = ({ classData }: { classData: ClassInfo | null }) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

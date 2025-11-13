@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AuthChecker from "./components/auth/AuthChecker";
 import Dashboard from "./pages/Dashboard";
 import InvitePage from "./pages/InvitePage";
+import ExamPage from "./pages/ExamPage";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
               element={<Dashboard />}
             />
             <Route path="/invite" element={<InvitePage />} />
+            <Route path="/exam/:examId" element={<ExamPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
