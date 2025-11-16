@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import api from "@/lib/axios";
 import type { Member } from "@/types/Member";
 import { toast } from "sonner";
@@ -41,6 +42,18 @@ interface Exam {
         shortanswer: number;
     };
     questions: Question[];
+}
+
+interface Submission {
+    _id: string;
+    examId: string;
+    userId: string;
+    answers: any[];
+    score: number;
+    duration: number; // giây
+    completed: boolean;
+    createdAt: string;
+    updatedAt: string; // thêm vào
 }
 
 export const authService = {
@@ -151,6 +164,48 @@ export const authService = {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             toast.error('Không thể lấy dữ liệu bài thi, vui lòng kiểm tra lại');
+        }
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    submitExam: async (data: any) => {
+        try {
+            const res = await api.post('/exam/submitexam', data);
+            return res.data;
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            toast.error('Không thể nộp bài thi');
+            console.log(error)
+        }
+    },
+    getExamSubmissions: async (examId: string) => {
+        try {
+            const res = await api.get(`/exam/getexamsubmissions?examId=${examId}`);
+            return res.data;
+        } catch (error) {
+            toast.error('Không thể lấy dữ liệu!');
+            console.log(error);
+            return null;
+        }
+    },
+    getClassSubmissions: async (classId: string) => {
+        try {
+            const res = await api.get(`/exam/getclasssubmissions?classId=${classId}`);
+            console.log(classId);
+            return res.data;
+        } catch (error) {
+            toast.error('Không thể lấy dữ liệu!');
+            console.log(error);
+            return [];
+        }
+    },
+    getSubmission: async (id: string): Promise<Submission | null> => {
+        try {
+            const res = await api.get(`/exam/getsubmission?id=${id}`);
+            return res.data as Submission;
+        } catch (error) {
+            toast.error('Không thể lấy dữ liệu bài làm!');
+            console.error(error);
+            return null;
         }
     }
 };

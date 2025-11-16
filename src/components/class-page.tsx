@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -180,10 +181,7 @@ function TabPanel({ tool, activeTab, classData, user, cls }: { cls: string, user
         // Tab thông kê
         case "Thống kê":
             return (
-                <div>
-                    <h2 className="text-lg font-bold">Thống Kê</h2>
-                    <p>{data}</p>
-                </div>
+                <StatsTab cls={cls} />
             )
 
 
@@ -329,3 +327,94 @@ const CreateExam = ({ classData, user }: { user: User | null; classData: ClassIn
         </div >
     )
 }
+
+interface ExamSubmission {
+    _id: string;
+    examId: string;
+    userId: string;
+    answers: any[];
+    score: number;
+    duration: number;
+    completed: boolean;
+    createdAt: string;
+}
+
+interface StatsTabProps {
+    cls: string;
+}
+
+const StatsTab = ({ cls }: StatsTabProps) => {
+    const [submissions, setSubmissions] = useState<ExamSubmission[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSubmissions = async () => {
+            try {
+                setLoading(true);
+                const res: ExamSubmission[] = await authService.getClassSubmissions(cls);
+                setSubmissions(res || []);
+            } catch (err) {
+                console.error("Lỗi lấy thống kê:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSubmissions();
+    }, [cls]);
+
+    if (loading) return <p>Đang tải thống kê...</p>;
+    if (!submissions.length) return <p>Chưa có bài làm nào.</p>;
+
+    // Tính toán thống kê
+    const total = submissions.length;
+    const completed = submissions.filter(s => s.completed).length;
+    const pending = total - completed;
+    const avgScore = submissions.reduce((acc, s) => acc + s.score, 0) / total;
+
+    return (
+        <div className="space-y-4">
+            <Card className="p-4">
+                <h2 className="text-lg font-bold mb-4">Thống kê lớp</h2>
+                <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <Label>Số bài làm</Label>
+                        <p>{total}</p>
+                    </div>
+                    <div>
+                        <Label>Bài hoàn thành</Label>
+                        <p>{completed}</p>
+                    </div>
+                    <div>
+                        <Label>Bài chưa hoàn thành</Label>
+                        <p>{pending}</p>
+                    </div>
+                    <div>
+                        <Label>Điểm trung bình</Label>
+                        <p>{avgScore.toFixed(2)}</p>
+                    </div>
+                </div>
+            </Card>
+
+            {/* Liệt kê chi tiết bài làm */}
+            <Card className="p-4">
+                <h3 className="font-bold mb-3">Danh sách bài làm</h3>
+                <div className="space-y-2">
+                    {submissions.map(sub => (
+                        <div
+                            key={sub._id}
+                            className="p-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+                            onClick={() => window.location.replace(`/submission/${sub._id}`)}
+                        >
+                            <p><strong>Bài làm ID:</strong> {sub._id}</p>
+                            <p><strong>Exam ID:</strong> {sub.examId}</p>
+                            <p><strong>User ID:</strong> {sub.userId}</p>
+                            <p><strong>Score:</strong> {sub.score}</p>
+                            <p><strong>Ngày tạo:</strong> {new Date(sub.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    ))}
+                </div>
+            </Card>
+        </div>
+    );
+};

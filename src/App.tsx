@@ -7,6 +7,8 @@ import AuthChecker from "./components/auth/AuthChecker";
 import Dashboard from "./pages/Dashboard";
 import InvitePage from "./pages/InvitePage";
 import ExamPage from "./pages/ExamPage";
+import DoExamPage from "./pages/DoExamPage";
+import SubmissionPage from "./pages/SubmissionPage";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
             />
             <Route path="/invite" element={<InvitePage />} />
             <Route path="/exam/:examId" element={<ExamPage />} />
+            <Route path="/exam/:examId/start" element={<DoExamPage />} />
+            <Route path="/submission/:id" element={<SubmissionPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
