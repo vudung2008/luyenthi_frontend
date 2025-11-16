@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { authService } from '@/services/authService';
 import { Card } from '@/components/ui/card';
